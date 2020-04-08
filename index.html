@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Deploy a Remix Contract</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1>Ethereum Secret Messenger</h1>
+        <hr>
+
+        <label for="message">This site writes a secret message to the Ethereum
+            blockchain!</label>
+        <input id="userInput" type="text">
+
+        <button id="setMessageButton">Set secret message</button>
+    </div>
+
+    <script>
+
+        // Connect a the web3 provider
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            web3 = new Web3("http://127.0.0.1:8545");
+        }
+
+        // Set a default account address
+        web3.eth.defaultAccount = '0x533a5903F2b95509F39C93072302A8312f44392D';
+
+        var myMessage = new web3.eth.Contract([
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "x",
+                "type": "string"
+            }
+        ],
+        "name": "setMessage",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getMessage",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }
+], '0xdF104bF331108CcBDA2b610EC8f951FADD6Ced20');
+
+    //set deployed message address
+
+
+        var button = document.querySelector('#setMessageButton');
+        var data = document.querySelector('#userInput');
+
+        button.addEventListener('click', function() {
+            var message = data.value;
+            myMessage.methods.setMessage(message).send({from: web3.eth.defaultAccount}).then(reciept => console.log(reciept));
+            console.log(message);
+        })
+
+    </script>
+</body>
+
+</html>
